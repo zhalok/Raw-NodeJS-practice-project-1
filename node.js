@@ -1,12 +1,15 @@
 const http = require("http");
+const fs = require("fs");
+const page_data = fs.readFileSync("index.html");
+
+
 const server = http.createServer((req,res)=>{
   if(req.url=="/"){
-      console.log();
+      res.write(page_data);
+      res.end();
   }
 });
 
-console.log("path: ");
-console.log(__dirname);
 
 
 
