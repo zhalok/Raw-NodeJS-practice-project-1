@@ -18,5 +18,8 @@
   "homepage": "https://github.com/zhalok/Raw-NodeJS-practice-project-1-#readme",
   "devDependencies": {
     "@types/node": "^16.4.3"
+  },
+  "dependencies": {
+    "prettier": "^2.3.2"
   }
 }
