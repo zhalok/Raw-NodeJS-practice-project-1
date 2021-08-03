@@ -1,3 +1,5 @@
-const obj ={}
-obj.val=2;
-console.log(obj);
+const func = (funcc) => {
+    funcc();
+}
+
+module.exports = func;

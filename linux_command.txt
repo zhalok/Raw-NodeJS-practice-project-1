@@ -1,0 +1,2 @@
+lsof -i TCP:port number
+kill -9 pid 
