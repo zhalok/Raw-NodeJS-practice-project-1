@@ -1,4 +1,5 @@
 const http = require("http");
+const url = require("url");
 const app = {}
 app.config = {
     port: 3000,
@@ -11,8 +12,14 @@ app.createServer = () => {
 }
 
 app.ReqResHandler = (req, res) => {
-    res.write("Hello world");
+
+    const parsedUrl = url.parse(req.url, true);
+    console.log(parsedUrl);
+    console.log("headers");
+    console.log(req.headers);
+
     res.end();
 }
 
 app.createServer();
+
