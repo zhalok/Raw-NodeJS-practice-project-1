@@ -1,9 +1,12 @@
 const http = require("http");
-const url = require("url");
+const handler = require("./helpers/reqhandler");
+
 const app = {}
 app.config = {
     port: 3000,
 }
+
+app.ReqResHandler = handler;
 
 app.createServer = () => {
     const server = http.createServer(app.ReqResHandler);
@@ -11,15 +14,6 @@ app.createServer = () => {
     console.log("server is on");
 }
 
-app.ReqResHandler = (req, res) => {
 
-    const parsedUrl = url.parse(req.url, true);
-    console.log(parsedUrl);
-    console.log("headers");
-    console.log(req.headers);
-
-    res.end();
-}
 
 app.createServer();
-
