@@ -19,17 +19,32 @@ const handler = (req, res) => {
         query
     }
 
-    const routeHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
-    routeHandler(reqData, (statusCode, payrole) => {
-
-        const jsonpayrole = JSON.stringify(payrole);
-        res.writeHead(statusCode);
-        res.end(jsonpayrole);
-
-    }
-    )
 
 
+    req.on("data", (data) => {
+
+    })
+
+    req.on("end", (data) => {
+        // const routeHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
+        // routeHandler(reqData, (statusCode, payrole) => {
+
+        //     const jsonpayrole = JSON.stringify(payrole);
+        //     res.writeHead(statusCode);
+        //     res.end(jsonpayrole);
+
+        // })
+        res.end("stream ended");
+    });
+
+    // const routeHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
+    // routeHandler(reqData, (statusCode, payrole) => {
+
+    //     const jsonpayrole = JSON.stringify(payrole);
+    //     res.writeHead(statusCode);
+    //     res.end(jsonpayrole);
+
+    // })
 
 
 
