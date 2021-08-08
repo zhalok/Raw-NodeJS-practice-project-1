@@ -1,6 +1,6 @@
 const sampleRouteHandler = (info, callback) => {
 
-    callback(200, "Ok running the route sample ");
+    console.log(info);
 
 }
 

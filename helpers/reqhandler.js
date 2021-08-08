@@ -11,40 +11,44 @@ const handler = (req, res) => {
     const method = req.method;
     const headers = req.headers;
     const query = parsedUrl.query;
+    const body = req.body;
+    const decoder = new StringDecoder("utf-8");
 
     const reqData = {
         trimmedPath,
         method,
         headers,
-        query
+        query,
+        body
     }
 
-
+    let maindata = "";
 
     req.on("data", (data) => {
-
+        maindata += decoder.write(data);
+        console.log(decoder.write(data));
     })
 
     req.on("end", (data) => {
-        // const routeHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
-        // routeHandler(reqData, (statusCode, payrole) => {
+        if (trimmedPath == "") {
+            res.end("On default route");
+            console.log(reqData);
+        }
 
-        //     const jsonpayrole = JSON.stringify(payrole);
-        //     res.writeHead(statusCode);
-        //     res.end(jsonpayrole);
+        maindata += decoder.end();
+        reqData.body = maindata;
+        const routeHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
+        routeHandler(reqData, (statusCode, payrole) => {
 
-        // })
+            const jsonpayrole = JSON.stringify(payrole);
+            res.writeHead(statusCode);
+            res.end(jsonpayrole);
+
+        })
         res.end("stream ended");
     });
 
-    // const routeHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
-    // routeHandler(reqData, (statusCode, payrole) => {
 
-    //     const jsonpayrole = JSON.stringify(payrole);
-    //     res.writeHead(statusCode);
-    //     res.end(jsonpayrole);
-
-    // })
 
 
 
