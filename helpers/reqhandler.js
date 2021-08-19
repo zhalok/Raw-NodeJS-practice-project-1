@@ -3,6 +3,8 @@ const { StringDecoder } = require('string_decoder');
 const routes = require("../routes/route");
 const notFoundHandler = require("../routes/route_handlers/notFoundHanlder")
 const defaultRouteHandler = require("../routes/route_handlers/defaultRouteHandler");
+const util = require("../helpers/util");
+
 
 const handler = (req, res) => {
 
@@ -44,8 +46,9 @@ const handler = (req, res) => {
         }
 
         maindata += decoder.end();
-        reqData.body = maindata;
+        reqData.body = util.parseJSON(maindata);
         const routeHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
+        console.log(routeHandler);
 
         routeHandler(reqData, (statusCode, payrole) => {
 

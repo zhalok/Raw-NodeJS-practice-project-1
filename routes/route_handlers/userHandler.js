@@ -1,12 +1,19 @@
+const data_helper = require("../../lib/data_helper");
+const readData = data_helper.read;
+
 const uerRouteHandler = {}
+
 
 
 createUser = (callback) => {
 
-    callback(200, { message: "User creating route called" });
+
 }
 getUser = (callback) => {
-    console.log("on get user route method ")
+
+
+    const users = readData()
+
     callback(200, { message: "User getting route called" });
 }
 
@@ -34,6 +41,9 @@ userRouteHandler = (info, callback) => {
     if (accepted_methods.indexOf(requested_method) > -1) {
         const handler_method = helper[requested_method];
         handler_method(callback);
+    }
+    else {
+        callback(404, { message: "Invalid Request" });
     }
 }
 
