@@ -14,7 +14,7 @@ app.createServer = () => {
     const server = http.createServer(app.ReqResHandler);
     server.listen(app.config.port);
     console.log("server is on");
-    console.log(process.env.HELLO);
+
 }
 
 

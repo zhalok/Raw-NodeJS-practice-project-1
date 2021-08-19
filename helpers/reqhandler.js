@@ -2,6 +2,7 @@ const url = require("url");
 const { StringDecoder } = require('string_decoder');
 const routes = require("../routes/route");
 const notFoundHandler = require("../routes/route_handlers/notFoundHanlder")
+const defaultRouteHandler = require("../routes/route_handlers/defaultRouteHandler");
 
 const handler = (req, res) => {
 
@@ -22,6 +23,8 @@ const handler = (req, res) => {
         body
     }
 
+    console.log(trimmedPath);
+
     let maindata = "";
 
     req.on("data", (data) => {
@@ -30,22 +33,30 @@ const handler = (req, res) => {
     })
 
     req.on("end", (data) => {
+
         if (trimmedPath == "") {
-            res.end("On default route");
-            console.log(reqData);
+            defaultRouteHandler(reqData, (statusCode, payrole) => {
+                res.setHeader("Content-type", "application/json");
+                res.writeHead(statusCode);
+                res.end(JSON.stringify(payrole));
+            })
+
         }
 
         maindata += decoder.end();
         reqData.body = maindata;
         const routeHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
+
         routeHandler(reqData, (statusCode, payrole) => {
 
             const jsonpayrole = JSON.stringify(payrole);
+            res.setHeader("content-type", "application/json");
             res.writeHead(statusCode);
             res.end(jsonpayrole);
 
         })
-        res.end("stream ended");
+
+
     });
 
 

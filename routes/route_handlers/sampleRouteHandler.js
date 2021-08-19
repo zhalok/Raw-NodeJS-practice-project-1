@@ -1,6 +1,7 @@
 const sampleRouteHandler = (info, callback) => {
 
-    console.log(info);
+    const response = { message: "We are in sample route" };
+    callback(200, response);
 
 }
 
