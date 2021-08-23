@@ -4,6 +4,7 @@ const routes = require("../routes/route");
 const notFoundHandler = require("../routes/route_handlers/notFoundHanlder")
 const defaultRouteHandler = require("../routes/route_handlers/defaultRouteHandler");
 const util = require("../helpers/util");
+const route = require("../routes/route");
 
 
 const handler = (req, res) => {
@@ -25,13 +26,13 @@ const handler = (req, res) => {
         body
     }
 
-    console.log(trimmedPath);
+
 
     let maindata = "";
 
     req.on("data", (data) => {
         maindata += decoder.write(data);
-        console.log(decoder.write(data));
+
     })
 
     req.on("end", (data) => {

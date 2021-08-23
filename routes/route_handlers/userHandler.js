@@ -1,7 +1,6 @@
 const data_helper = require("../../lib/data_helper");
 const readData = data_helper.read;
 
-const uerRouteHandler = {}
 
 
 
@@ -9,12 +8,12 @@ createUser = (callback) => {
 
 
 }
-getUser = (callback) => {
+getUser = (info, callback) => {
+
+    const key = info.query.handler_method;
+    readData("userdata", "userdata", callback);
 
 
-    const users = readData()
-
-    callback(200, { message: "User getting route called" });
 }
 
 updateUser = (callback) => {
@@ -40,7 +39,8 @@ userRouteHandler = (info, callback) => {
     const accepted_methods = ["GET", "POST", "PUT", "DELETE"];
     if (accepted_methods.indexOf(requested_method) > -1) {
         const handler_method = helper[requested_method];
-        handler_method(callback);
+        handler_method(info, callback);
+
     }
     else {
         callback(404, { message: "Invalid Request" });

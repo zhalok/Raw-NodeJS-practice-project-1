@@ -1,7 +1,10 @@
+const readData = require("../../lib/data_helper");
+
 const sampleRouteHandler = {}
 
 sampleRouteHandler.GET = (info, callback) => {
-    callback(200, { message: "ok on get method call" });
+    // console.log(readData);
+    callback(200, "ok fine great");
 }
 
 sampleRouteHandler.POST = (info, callback) => {
@@ -9,6 +12,14 @@ sampleRouteHandler.POST = (info, callback) => {
     const name = info.body.name;
     const pass = info.body.pass;
     callback(200, {});
+}
+
+sampleRouteHandler.PUT = (info, callback) => {
+
+}
+
+sampleRouteHandler.DELETE = (info, callback) => {
+
 }
 
 
