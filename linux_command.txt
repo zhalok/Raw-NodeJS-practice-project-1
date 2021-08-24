@@ -1,2 +1,2 @@
-lsof -i TCP:port number
+lsof -i TCP:3000
 kill -9 pid 

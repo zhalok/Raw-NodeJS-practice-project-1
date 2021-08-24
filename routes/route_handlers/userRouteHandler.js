@@ -1,17 +1,36 @@
 const data_helper = require("../../lib/data_helper");
+const checker = require("../../helpers/checker").checkBodyInfo;
 const readData = data_helper.read;
+const createData = data_helper.create;
+
+// first name last name phone number password 
+
+
+createUser = (info, callback) => {
 
 
 
-
-createUser = (callback) => {
-
+    if (checker(info.body, ["firstname", "lastname", "username", "password"])) {
+        createData("userdata", info.body.username, info.body, callback);
+    }
+    else {
+        callback(200, { message: "Invalid information" });
+    }
 
 }
+
 getUser = (info, callback) => {
 
-    const key = info.query.handler_method;
-    readData("userdata", "userdata", callback);
+
+    if (checker(info.body, ["username"])) {
+
+        readData("userdata", info.body.username, callback);
+    }
+    else {
+        callback(404, { message: "invalid information" });
+    }
+
+
 
 
 }

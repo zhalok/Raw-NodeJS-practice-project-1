@@ -5,7 +5,7 @@ util.parseJSON = (jsonString) => {
     try {
         parsedJSON = JSON.parse(jsonString);
 
-    } catch {
+    } catch (err) {
         parsedJSON = {}
     }
 

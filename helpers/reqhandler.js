@@ -5,6 +5,9 @@ const notFoundHandler = require("../routes/route_handlers/notFoundHanlder")
 const defaultRouteHandler = require("../routes/route_handlers/defaultRouteHandler");
 const util = require("../helpers/util");
 const route = require("../routes/route");
+const bodyChecker = require("../helpers/checker").checkBodyInfo;
+const checker = require("../helpers/checker");
+
 
 
 const handler = (req, res) => {
@@ -15,7 +18,7 @@ const handler = (req, res) => {
     const method = req.method;
     const headers = req.headers;
     const query = parsedUrl.query;
-    const body = req.body;
+    const body = util.parseJSON(req.body);
     const decoder = new StringDecoder("utf-8");
 
     const reqData = {
@@ -37,19 +40,17 @@ const handler = (req, res) => {
 
     req.on("end", (data) => {
 
-        if (trimmedPath == "") {
-            defaultRouteHandler(reqData, (statusCode, payrole) => {
-                res.setHeader("Content-type", "application/json");
-                res.writeHead(statusCode);
-                res.end(JSON.stringify(payrole));
-            })
 
-        }
 
         maindata += decoder.end();
-        reqData.body = util.parseJSON(maindata);
+
+        maindata = JSON.parse(maindata);
+        reqData.body = maindata;
+
+
+
         const routeHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
-        console.log(routeHandler);
+
 
         routeHandler(reqData, (statusCode, payrole) => {
 
@@ -57,6 +58,7 @@ const handler = (req, res) => {
             res.setHeader("content-type", "application/json");
             res.writeHead(statusCode);
             res.end(jsonpayrole);
+            return;
 
         })
 
