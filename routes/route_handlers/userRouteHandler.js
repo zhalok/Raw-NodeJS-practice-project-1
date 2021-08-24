@@ -1,5 +1,6 @@
 const data_helper = require("../../lib/data_helper");
 const checker = require("../../helpers/checker").checkBodyInfo;
+const util = require("../../helpers/util");
 const readData = data_helper.read;
 const createData = data_helper.create;
 
@@ -10,8 +11,10 @@ createUser = (info, callback) => {
 
 
 
-    if (checker(info.body, ["firstname", "lastname", "username", "password"])) {
-        createData("userdata", info.body.username, info.body, callback);
+    const data = util.checkBodyInfo(info.body, ["firstname", "lastname", "username", "password"])
+
+    if (typeof data == "object") {
+        createData("userdata", data.username, data, callback);
     }
     else {
         callback(200, { message: "Invalid information" });
