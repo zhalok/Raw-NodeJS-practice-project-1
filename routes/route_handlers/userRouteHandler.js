@@ -45,11 +45,11 @@ getUser = (info, callback) => {
 
 }
 
-updateUser = (callback) => {
+updateUser = (info, callback) => {
     callback(200, { message: "User updating route called" });
 }
 
-deleteUser = (callback) => {
+deleteUser = (info, callback) => {
 
     callback(200, { message: "User deleting route called" });
 
