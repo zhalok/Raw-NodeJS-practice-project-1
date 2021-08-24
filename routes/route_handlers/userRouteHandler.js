@@ -24,14 +24,21 @@ createUser = (info, callback) => {
 
 getUser = (info, callback) => {
 
+    const body = info.body;
+    const username = body.username.trim();
+    const password = body.password.trim();
+    if (typeof username === "string" && username.length > 0 && password.length >= 8) {
+        const data = {
+            username,
+            password: util.hash(password),
+        }
 
-    if (checker(info.body, ["username"])) {
+        readData("userdata", username, callback, data);
 
-        readData("userdata", info.body.username, callback);
+
     }
-    else {
-        callback(404, { message: "invalid information" });
-    }
+
+
 
 
 
