@@ -76,6 +76,21 @@ util.checkBodyInfo = (body, checkInfo) => {
 
 }
 
+util.createRandomString = (len) => {
+    if (len == 0) return false;
+
+    let randomString = '';
+    for (let i = 0; i < len; i++) {
+
+        const ans = Math.floor(1 + Math.random() * 10);
+        let chr = String.fromCharCode(97 + ans);
+        randomString += chr;
+
+    }
+
+    return randomString;
+}
+
 
 
 

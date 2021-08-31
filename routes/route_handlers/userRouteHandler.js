@@ -16,62 +16,38 @@ createUser = (info, callback) => {
     const data = util.checkBodyInfo(info.body, ["firstname", "lastname", "username", "password"])
 
     if (typeof data == "object") {
-        createData("userdata", data.username, data, (status, fileinfo) => {
+        createData("userdata", data.username, data, (status) => {
             if (status == 200) {
-                callback(200, { message: "OK data written" });
+                callback(status, { message: "OK data written" });
             }
-            else if (status == 400) {
-                callback(400, { message: "Service Error" });
+            else if (status == 500) {
+                callback(status, { message: "Service Error" });
             }
-            else if (status == 123) {
-                callback(400, { message: "User already exists" });
+            else if (status == 409) {
+                callback(status, { message: "User already exists" });
             }
 
         });
     }
     else {
-        callback(200, { message: "Invalid information" });
+        callback(status, { message: "Invalid information" });
     }
 
 }
 
 getUser = (info, callback) => {
 
-    const body = info.body;
-    const username = body.username.trim();
-    const password = body.password.trim();
-    if (typeof username === "string" && username.length > 0 && password.length >= 8) {
-        const data = {
-            username,
-            password: util.hash(password),
+    const username = info.query.username;
+    console.log(username);
+    readData("userdata", username, (err, data) => {
+        if (err) {
+            callback(404, { message: "User not found" });
         }
-
-        readData("userdata", username, (status, fileinfo) => {
-            if (status == 200) {
-                if (fileinfo.username === data.username && fileinfo.password === data.password) {
-
-                    const user = { ...fileinfo };
-                    delete user.password;
-
-
-
-                    callback(200, { message: "User found", user });
-
-                }
-                else {
-                    callback(400, { message: "Credentials error" });
-                }
-            }
-            else {
-                callback(400, { message: "User not found" });
-            }
-        })
-
-
-
-
-    }
-
+        else {
+            console.log(data);
+            callback(200, { message: "User found", user: data });
+        }
+    })
 
 
 
@@ -85,19 +61,19 @@ updateUser = (info, callback) => {
     const props = info.body.props;
     const value = info.body.value;
 
-    let fileData;
 
-    readData("userdata", username, (status, fileinfo) => {
 
-        if (status == 200) {
-            console
+    readData("userdata", username, (err, fileinfo) => {
+
+        if (!err) {
+
 
             if (props != "username") {
 
 
                 fileinfo[props] = value;
-                updateData("userdata", username, fileinfo, (status, fileinfo) => {
-                    if (status == 200) {
+                updateData("userdata", username, fileinfo, (err) => {
+                    if (!err) {
                         callback(status, { message: "User updated", updatedInfo: fileinfo });
                     }
                     else {
@@ -110,7 +86,7 @@ updateUser = (info, callback) => {
             }
             else {
 
-                // callback(400, { message: "Sorry Username Cant be CHanged" });
+
 
                 if (!util.phoneValidity(value)) {
                     callback(400, { message: "Invalid username" });
@@ -162,33 +138,15 @@ updateUser = (info, callback) => {
 
 deleteUser = (info, callback) => {
 
-    const username = info.body.username;
-
-
-    const password = util.hash(info.body.password);
-    readData("userdata", username, (status, data) => {
-        if (status == 200) {
-
-            if (data.username == username && data.password == password) {
-                deleteData("userdata", username, (status) => {
-                    if (status == 200) {
-                        callback(status, { message: "successfully deleted user " + username });
-                    }
-                    else {
-                        callback(status, { message: "Unable to delete" });
-                    }
-                })
-            }
-            else {
-                callback(400, { message: "Credentials didnt match" });
-            }
-
+    const username = info.query.username;
+    deleteData("userdata", username, (err) => {
+        if (err) {
+            callback(404, { message: "Requested User Not Found" });
         }
         else {
-            callback(400, { message: "Requested User not found" });
+            callback(200, { message: "User " + username + " has been deleted successfully" });
         }
     })
-
 
 }
 
