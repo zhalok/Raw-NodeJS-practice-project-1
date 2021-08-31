@@ -15,8 +15,41 @@ handler.createToken = (info, callback) => {
 
     const { username, password } = info.body;
     const hashedPassword = util.hash(password);
-    readData("userdata", username, (status, data) => {
-        if (status == 200) {
+    readData("userdata", username, (err, user) => {
+        if (err) {
+            callback(404, { message: "User Not Found" });
+        }
+        else {
+
+            const user_username = user.username;
+            const user_password = user.password;
+
+
+            if (user_username == username && user_password == hashedPassword) {
+
+                const token = util.createRandomString(10);
+                const tokenData = {
+                    user: user_username,
+                    id: token,
+                    validity: Date.now() + 3600 * 1000,
+                }
+                createData("tokens", token, tokenData, (status) => {
+                    if (status == 200) {
+                        callback(status, { message: "OK token Generated", tokenData });
+                    }
+                    else if (status == 500) {
+                        callback(status, { message: "Service Error" });
+                    }
+                    else if (status == 409) {
+                        callback(status, { message: "User already exists" });
+                    }
+
+                });
+            }
+            else {
+                callback(401, { message: "invalid credentials" })
+            }
+
 
         }
     })
@@ -25,6 +58,36 @@ handler.createToken = (info, callback) => {
 }
 
 handler.getToken = (info, callback) => {
+
+    const token = info.query.id;
+
+    readData("tokens", token, (err, data) => {
+        if (err) {
+            callback(404, { message: "Token Not FOund" });
+        }
+        else {
+            let validity = data.validity;
+            if (data.validity > Date.now()) {
+
+                validity = Date.now() + 3600 * 1000;
+                const newToken = { ...data };
+
+                newToken.validity = validity;
+                updateData("tokens", token, newToken, (err) => {
+                    if (!err) {
+                        callback(200, { message: "Welcome you are logged in", });
+                    }
+                    else {
+                        callback(500, { message: "There was a problem" });
+                    }
+                })
+
+            }
+            else {
+                callback(401, { message: "Token Expired" });
+            }
+        }
+    })
 
 }
 

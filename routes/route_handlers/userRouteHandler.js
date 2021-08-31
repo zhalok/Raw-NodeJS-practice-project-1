@@ -38,21 +38,16 @@ createUser = (info, callback) => {
 getUser = (info, callback) => {
 
     const username = info.query.username;
-    console.log(username);
     readData("userdata", username, (err, data) => {
         if (err) {
             callback(404, { message: "User not found" });
         }
         else {
-            console.log(data);
-            callback(200, { message: "User found", user: data });
+            const userData = { ...data };
+            delete userData.password;
+            callback(200, { message: "User found", user: userData });
         }
     })
-
-
-
-
-
 }
 
 updateUser = (info, callback) => {
