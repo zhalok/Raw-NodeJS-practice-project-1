@@ -96,12 +96,25 @@ handler.updateToken = (info, callback) => {
 }
 
 handler.deleteToken = (info, callback) => {
+    const token = info.query.id;
+
+    readData("tokens", token, (err, data) => {
+        if (err) {
+            callback(404, { message: "Token not found to delete" });
+        }
+        else {
+            deleteData("tokens", token, (err1) => {
+                if (err1) {
+                    callback(500, { message: "Service error" });
+                }
+                else {
+                    callback(200, { message: `Token ${token} was deleted successfully` });
+                }
+            })
+        }
+    })
 
 }
-
-
-
-
 
 handler.tokenRouteHandler = (info, callback) => {
 
@@ -126,4 +139,4 @@ handler.tokenRouteHandler = (info, callback) => {
 
 }
 
-module.exports = handler.tokenRouteHandler;
+module.exports = handler;

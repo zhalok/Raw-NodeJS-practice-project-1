@@ -6,10 +6,12 @@ const createData = data_helper.create;
 const updateData = data_helper.update;
 const deleteData = data_helper.delete;
 
+const handler = {};
+
 // first name last name phone number password 
 
 
-createUser = (info, callback) => {
+handler.createUser = (info, callback) => {
 
 
 
@@ -35,7 +37,7 @@ createUser = (info, callback) => {
 
 }
 
-getUser = (info, callback) => {
+handler.getUser = (info, callback) => {
 
     const username = info.query.username;
     readData("userdata", username, (err, data) => {
@@ -50,7 +52,7 @@ getUser = (info, callback) => {
     })
 }
 
-updateUser = (info, callback) => {
+handler.updateUser = (info, callback) => {
 
     const username = info.body.username;
     const props = info.body.props;
@@ -131,7 +133,7 @@ updateUser = (info, callback) => {
 
 }
 
-deleteUser = (info, callback) => {
+handler.deleteUser = (info, callback) => {
 
     const username = info.query.username;
     deleteData("userdata", username, (err) => {
@@ -145,28 +147,31 @@ deleteUser = (info, callback) => {
 
 }
 
-const helper = {
-    GET: getUser,
-    POST: createUser,
-    PUT: updateUser,
-    DELETE: deleteUser
+handler.methods = {
+    GET: handler.getUser,
+    POST: handler.createUser,
+    PUT: handler.updateUser,
+    DELETE: handler.deleteUser
 }
 
-userRouteHandler = (info, callback) => {
+handler.userRouteHandler = (info, callback) => {
 
     const requested_method = info.method;
     const accepted_methods = ["GET", "POST", "PUT", "DELETE"];
     if (accepted_methods.indexOf(requested_method) > -1) {
-        const handler_method = helper[requested_method];
+        const handler_method = handler.methods[requested_method];
+
         handler_method(info, callback);
 
     }
     else {
         callback(404, { message: "Invalid Request" });
     }
+    // console.log(handler.helper["GET"]);
 }
 
-module.exports = userRouteHandler;
+
+module.exports = handler;
 
 
 
