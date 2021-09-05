@@ -1,4 +1,4 @@
-const { read, create, update } = require("../../lib/data_helper");
+const { read, create, update, readAll } = require("../../lib/data_helper");
 const { createRandomString } = require("../../helpers/util");
 const { type } = require("os");
 const { check, user } = require("../route");
@@ -6,6 +6,9 @@ const { check, user } = require("../route");
 
 
 const handler = {};
+
+
+
 
 handler.createCheck = (info, callback) => {
 
@@ -90,12 +93,85 @@ handler.createCheck = (info, callback) => {
 
 handler.getCheck = (info, callback) => {
     const checkId = info.query.id;
-    read("checks", checkId, (err, data) => {
-        if (!err) {
-            callback(200, data);
-        }
-        else callback(404, { message: "check not found" });
-    })
+    console.log(checkId);
+    const token = info.headers.token;
+    if (checkId == "all") {
+
+        read("tokens", token, (err, tokenData) => {
+            if (!err && tokenData) {
+                if (tokenData.validity > Date.now()) {
+                    const user = tokenData.user;
+                    read("userdata", user, (err, userData) => {
+                        if (!err && userData) {
+                            const userChecks = userData.checks;
+                            if (userChecks) {
+                                readAll("checks", userChecks, (err, allCheckData) => {
+                                    if (!err && allCheckData) {
+                                        callback(200, allCheckData);
+                                    }
+                                    else {
+                                        callback(400, { message: "there was a problem" })
+                                    }
+                                })
+                            }
+                            else {
+                                callback(200, { message: "there are not checks for the user" });
+                            }
+                        }
+                        else {
+                            callback(404, { message: "User not found" });
+                        }
+                    })
+                }
+                else {
+                    callback(401, { message: "token expired" });
+                }
+            }
+            else {
+                callback(409, { message: "invalid token" });
+            }
+        })
+
+
+    }
+    else {
+
+        read("tokens", token, (err, tokenData) => {
+            if (!err && tokenData) {
+                if (tokenData.validity > Date.now()) {
+                    const user = tokenData.user;
+                    read("userdata", user, (err, userData) => {
+                        if (!err && userData) {
+                            console.log(userData);
+                            if (userData.checks && userData.checks.indexOf(checkId) > -1) {
+                                read("checks", checkId, (err, checkData) => {
+                                    if (!err && checkData) {
+                                        callback(200, checkData);
+                                    }
+                                    else {
+                                        callback(400, { message: "Check not found" });
+                                    }
+                                })
+                            }
+                            else {
+                                callback(400, { message: "check was not registered for the user" });
+                            }
+                        }
+                        else {
+                            callback(404, { message: "User not found" });
+                        }
+                    })
+                }
+                else {
+                    callback(401, { message: "token expired" });
+                }
+            }
+            else {
+                callback(409, { message: "invalid token" });
+            }
+        })
+
+    }
 
 }
 

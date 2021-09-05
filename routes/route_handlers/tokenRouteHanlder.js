@@ -35,7 +35,7 @@ handler.createToken = (info, callback) => {
                 }
                 createData("tokens", token, tokenData, (err) => {
                     if (!err) {
-                        callback(200, { message: "Token generated" });
+                        callback(200, { message: "Token generated", tokenData });
                     }
                     else {
                         callback(400, { message: "Service error" });
