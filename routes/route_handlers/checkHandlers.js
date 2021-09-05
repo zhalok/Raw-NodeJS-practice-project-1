@@ -1,4 +1,5 @@
 const { read, create, update, readAll } = require("../../lib/data_helper");
+const deleteData = require("../../lib/data_helper").delete;
 const { createRandomString } = require("../../helpers/util");
 const { type } = require("os");
 const { check, user } = require("../route");
@@ -256,6 +257,35 @@ handler.updateCheck = (info, callback) => {
 }
 
 handler.deleteCheck = (info, callback) => {
+    const token = info.headers.token;
+    const checkId = info.query.id;
+    read("tokens", token, (err, tokenData) => {
+        if (!err && tokenData) {
+            const user = tokenData.user;
+            read("userdata", user, (err, userData) => {
+                if (!err && userData) {
+                    if (userData.checks && userData.checks.indexOf(checkId) > -1) {
+                        const index = userData.checks.indexOf(checkId);
+                        userData.checks.splice(index, 1);
+                        deleteData("checks", checkId, (err) => {
+                            if (!err) {
+                                callback(200, { message: `check ${checkId} has been deleted successfully` });
+                            }
+                            else {
+                                callback(400, { message: "there was a problem" });
+                            }
+                        })
+                    }
+                }
+                else {
+                    callback(404, { message: "User not found" });
+                }
+            })
+        }
+        else {
+            callback(404, { message: "unauthorized" });
+        }
+    })
 
 }
 
