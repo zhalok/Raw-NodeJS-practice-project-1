@@ -109,7 +109,7 @@ handler.updateCheck = (info, callback) => {
     if (checkProps) {
 
 
-        if (checkProps == "protocol" && typeof checkVal == "string" && ["http", "https"], indexOf(checkVal) > -1)
+        if (checkProps == "protocol" && typeof checkVal == "string" && ["http", "https"].indexOf(checkVal) > -1)
             flag = true;
 
         if (checkProps == "url" && typeof checkVal == "string" && checkVal.length > 0)
@@ -137,12 +137,12 @@ handler.updateCheck = (info, callback) => {
                 const user = tokenData.user;
                 read("userdata", user, (err, userData) => {
                     if (!err && userData) {
-                        const checks = typeof userData.checks;
+                        const checks = userData.checks;
                         if (checks && checks.indexOf(checkId) > -1) {
                             read("checks", checkId, (err, checkData) => {
                                 if (!err && checkData) {
                                     checkData[checkProps] = checkVal;
-                                    create("checks", checkId, checkData, (err) => {
+                                    update("checks", checkId, checkData, (err) => {
                                         if (!err) {
                                             callback(200, { message: `check ${checkId} was updated!!!`, newCheck: checkData });
                                         }
