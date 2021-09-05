@@ -18,15 +18,12 @@ handler.createUser = (info, callback) => {
     const data = util.checkBodyInfo(info.body, ["firstname", "lastname", "username", "password"])
 
     if (typeof data == "object") {
-        createData("userdata", data.username, data, (status) => {
-            if (status == 200) {
-                callback(status, { message: "OK data written" });
+        createData("userdata", data.username, data, (err) => {
+            if (!err) {
+                callback(200, { message: "User created" });
             }
-            else if (status == 500) {
-                callback(status, { message: "Service Error" });
-            }
-            else if (status == 409) {
-                callback(status, { message: "User already exists" });
+            else {
+                callback(400, { message: "There was a problem creating user" });
             }
 
         });

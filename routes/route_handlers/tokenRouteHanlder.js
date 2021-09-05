@@ -33,15 +33,12 @@ handler.createToken = (info, callback) => {
                     id: token,
                     validity: Date.now() + 3600 * 1000,
                 }
-                createData("tokens", token, tokenData, (status) => {
-                    if (status == 200) {
-                        callback(status, { message: "OK token Generated", tokenData });
+                createData("tokens", token, tokenData, (err) => {
+                    if (!err) {
+                        callback(200, { message: "Token generated" });
                     }
-                    else if (status == 500) {
-                        callback(status, { message: "Service Error" });
-                    }
-                    else if (status == 409) {
-                        callback(status, { message: "User already exists" });
+                    else {
+                        callback(400, { message: "Service error" });
                     }
 
                 });

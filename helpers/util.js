@@ -79,17 +79,20 @@ util.checkBodyInfo = (body, checkInfo) => {
 util.createRandomString = (len) => {
     if (len == 0) return false;
 
+    const letters = "0123456789"
+
     let randomString = '';
     for (let i = 0; i < len; i++) {
 
-        const ans = Math.floor(1 + Math.random() * 10);
-        let chr = String.fromCharCode(97 + ans);
+        const ans = Math.floor(0 + Math.random() * 9);
+        let chr = letters[ans];
         randomString += chr;
 
     }
 
     return randomString;
 }
+
 
 
 
