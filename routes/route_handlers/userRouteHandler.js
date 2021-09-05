@@ -36,7 +36,7 @@ handler.createUser = (info, callback) => {
 
 handler.getUser = (info, callback) => {
 
-    const username = info.query.username;
+    const username = info.query.id;
     readData("userdata", username, (err, data) => {
         if (err) {
             callback(404, { message: "User not found" });
@@ -51,7 +51,7 @@ handler.getUser = (info, callback) => {
 
 handler.updateUser = (info, callback) => {
 
-    const username = info.body.username;
+    const username = info.query.id;
     const props = info.body.props;
     const value = info.body.value;
 
@@ -132,7 +132,7 @@ handler.updateUser = (info, callback) => {
 
 handler.deleteUser = (info, callback) => {
 
-    const username = info.query.username;
+    const username = info.query.id;
     deleteData("userdata", username, (err) => {
         if (err) {
             callback(404, { message: "Requested User Not Found" });

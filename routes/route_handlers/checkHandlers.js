@@ -1,5 +1,7 @@
 const { read, create, update } = require("../../lib/data_helper");
 const { createRandomString } = require("../../helpers/util");
+const { type } = require("os");
+const { check, user } = require("../route");
 
 
 
@@ -87,10 +89,93 @@ handler.createCheck = (info, callback) => {
 }
 
 handler.getCheck = (info, callback) => {
+    const checkId = info.query.id;
+    read("checks", checkId, (err, data) => {
+        if (!err) {
+            callback(200, data);
+        }
+        else callback(404, { message: "check not found" });
+    })
 
 }
 
 handler.updateCheck = (info, callback) => {
+
+    const checkId = info.query.id;
+    const checkProps = (typeof info.body.props == "string" && ["protocol", "url", "method", "successCodes", "timeout"].indexOf(info.body.props) > -1) ? info.body.props : false
+    const checkVal = info.body.value;
+    let flag = false;
+
+    if (checkProps) {
+
+
+        if (checkProps == "protocol" && typeof checkVal == "string" && ["http", "https"], indexOf(checkVal) > -1)
+            flag = true;
+
+        if (checkProps == "url" && typeof checkVal == "string" && checkVal.length > 0)
+            flag = true;
+
+        if (checkProps == "method" && typeof checkVal == "string" && ["GET", "POST", "PUT", "DELETE"].indexOf(checkVal) > -1)
+            flag = true;
+
+        if (checkProps == "successCodes" && typeof checkVal == "object" && checkVal instanceof Array)
+            flag = true;
+
+        if (checkProps == "timeout" && typeof checkVal == "number" && checkVal >= 1 && checkVal <= 5)
+            flag = true;
+
+
+
+    }
+
+    if (flag) {
+        const token = info.headers.token;
+        read("tokens", token, (err, tokenData) => {
+
+            if (!err && tokenData) {
+
+                const user = tokenData.user;
+                read("userdata", user, (err, userData) => {
+                    if (!err && userData) {
+                        const checks = typeof userData.checks;
+                        if (checks && checks.indexOf(checkId) > -1) {
+                            read("checks", checkId, (err, checkData) => {
+                                if (!err && checkData) {
+                                    checkData[checkProps] = checkVal;
+                                    create("checks", checkId, checkData, (err) => {
+                                        if (!err) {
+                                            callback(200, { message: `check ${checkId} was updated!!!`, newCheck: checkData });
+                                        }
+                                        else {
+                                            callback(400, { message: "there was a problem updating the check " + checkId });
+                                        }
+                                    })
+                                }
+                            })
+
+                        }
+                        else {
+                            callback(409, { message: "invalid check id" });
+                        }
+                    }
+                    else {
+                        callback("404", { message: "User not found" });
+                    }
+                })
+
+            }
+            else {
+                callback(404, { message: "token not found or expired" });
+            }
+
+        })
+    }
+    else {
+        callback(409, { message: "bad request" });
+    }
+
+
+
 
 }
 
