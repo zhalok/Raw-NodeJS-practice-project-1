@@ -15,15 +15,17 @@ handler.createUser = (info, callback) => {
 
 
 
-    const data = util.checkBodyInfo(info.body, ["firstname", "lastname", "username", "password"])
+    const data = util.checkBodyInfo(info.body, ["firstname", "lastname", "username", "password"]);
+    console.log(data);
 
     if (typeof data == "object") {
+
         createData("userdata", data.username, data, (err) => {
             if (!err) {
                 callback(200, { message: "User created" });
             }
             else {
-                callback(400, { message: "There was a problem creating user" });
+                callback(400, err);
             }
 
         });
