@@ -91,6 +91,7 @@ handler.createCheck = (info, callback) => {
 
 handler.getCheck = (info, callback) => {
     const checkId = info.query.id;
+
     console.log(checkId);
     const token = info.headers.token;
     if (checkId == "all") {
