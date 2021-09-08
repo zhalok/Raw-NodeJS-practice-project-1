@@ -1,12 +1,1 @@
-{
-    "user": "01716922067",
-    "checkId": "3760841438",
-    "protocol": "http",
-    "url": "codeforces.com/api/user.rating?handle=Fefer_Ivan",
-    "successCodes": [
-        200,
-        400,
-        402
-    ],
-    "timeout": 3
-}
+{"user":"01716922067","checkId":"3760841438","protocol":"https","url":"codeforces.com/api/user.rating?handle=vegeta46","successCodes":[200,400,402],"timeout":3,"status":"up"}
